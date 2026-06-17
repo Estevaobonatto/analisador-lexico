@@ -1,79 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet"> 
-    <title>Analizador Léxico</title>
+    <title>Analisador Lexico</title>
 </head>
 <body>
-    <h1 id="main-title">Analizador Léxico</h1>
-    
-    <section id="section-main-page">
 
-        <section id="section-input">
+    <header>
+        <h1>analisador lexico</h1>
+        <p>automato finito deterministico</p>
+    </header>
 
-            <div id="add-word" class="input-area">
-                <h3>Inserir Palavras</h3>
-                <input id="insert-input">
-                <button id="insert-button">Adicionar a lista</button>
+    <main>
 
-                <div id="word-list">
-                    
+        <section id="controls">
+            <div id="insert-box">
+                <label for="insert-input">inserir palavras</label>
+                <div class="input-row">
+                    <input id="insert-input" type="text" placeholder="digite e pressione enter">
+                    <button id="insert-button">adicionar</button>
                 </div>
             </div>
-            
-            
-            
-    
-            <div id="search-word" class="input-area">
-                <h3 id="search-title">Buscar Palavras</h3>
-                <input id="search-input">
+
+            <div id="search-box">
+                <label for="search-input">buscar palavras</label>
+                <input id="search-input" type="text" placeholder="digite para buscar">
             </div>
         </section>
-        
-        <table id=lexical-table>
-            <thead id=table-head>
-                <tr>
-                    <th class=table-head-element id=table-head-main-element>δ</th>
-                    <th class=table-head-element>a</th>
-                    <th class=table-head-element>b</th>
-                    <th class=table-head-element>c</th>
-                    <th class=table-head-element>d</th>
-                    <th class=table-head-element>e</th>
-                    <th class=table-head-element>f</th>
-                    <th class=table-head-element>g</th>
-                    <th class=table-head-element>h</th>
-                    <th class=table-head-element>i</th>
-                    <th class=table-head-element>j</th>
-                    <th class=table-head-element>k</th>
-                    <th class=table-head-element>l</th>
-                    <th class=table-head-element>m</th>
-                    <th class=table-head-element>n</th>
-                    <th class=table-head-element>o</th>
-                    <th class=table-head-element>p</th>
-                    <th class=table-head-element>q</th>
-                    <th class=table-head-element>r</th>
-                    <th class=table-head-element>s</th>
-                    <th class=table-head-element>t</th>
-                    <th class=table-head-element>u</th>
-                    <th class=table-head-element>v</th>
-                    <th class=table-head-element>w</th>
-                    <th class=table-head-element>x</th>
-                    <th class=table-head-element>y</th>
-                    <th class=table-head-element>z</th>
-                </tr>
-            </thead>
 
-            <tbody id='table-body'>
-                
-            </tbody>
-        </table>
+        <section id="word-list-section">
+            <span class="section-label">palavras inseridas:</span>
+            <div id="word-list"></div>
+        </section>
 
-    </section>
-    
+        <section id="table-section">
+            <table id="lexical-table">
+                <thead id="table-head">
+                    <tr>
+                        <th id="th-delta">&delta;</th>
+                        <th>a</th>
+                        <th>b</th>
+                        <th>c</th>
+                        <th>d</th>
+                        <th>e</th>
+                        <th>f</th>
+                        <th>g</th>
+                        <th>h</th>
+                        <th>i</th>
+                        <th>j</th>
+                        <th>k</th>
+                        <th>l</th>
+                        <th>m</th>
+                        <th>n</th>
+                        <th>o</th>
+                        <th>p</th>
+                        <th>q</th>
+                        <th>r</th>
+                        <th>s</th>
+                        <th>t</th>
+                        <th>u</th>
+                        <th>v</th>
+                        <th>w</th>
+                        <th>x</th>
+                        <th>y</th>
+                        <th>z</th>
+                    </tr>
+                </thead>
+
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
     <script src="script.js"></script>
 </body>
 </html>

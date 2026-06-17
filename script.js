@@ -1,28 +1,26 @@
 const DEFAULT_STATE = 0;
 const ALPHABET_SIZE = 26;
 
-let matrix; // (string "abc"): M[0]["a"] = 1, M[1]["b"] = 2, M[2]["c"] = 3 (final),
-let wordList = []; // Lista de palavras que estarão presentes no automato
-let automata_length = 0; // tamanho matrix
-let table_length = 0; // tamanho tabela
-let finalStates = []; // listados na tabela
+let matrix;
+let wordList = [];
+let automata_length = 0;
+let table_length = 0;
+let finalStates = [];
 
 let STATE = DEFAULT_STATE;
 
 $( function() {
 
-  initializeMatrix(); // Array vazio []
+  initializeMatrix();
 
-  $("#insert-input").val(""); // clear
-  $("#search-input").val(""); // clear
+  $("#insert-input").val("");
+  $("#search-input").val("");
 
-  // inserir a palavra no automato e na tabela
     $("#insert-button").click(function() {
       const word = $("#insert-input").val().toLowerCase();
       insertWord(word);
     })
 
-    // Enter
     $('#insert-input').keypress(function (e) {
       if (e.which != 13) return;
 
@@ -30,7 +28,6 @@ $( function() {
       insertWord(word);
     });
 
-    //buscar palavras
     $("#search-input").keyup(function() {
       const word = $("#search-input").val().toLowerCase();
       search(word);
@@ -43,21 +40,17 @@ function initializeMatrix() {
   matrix = [];
 }
 
-// Insere palavra na lista de palavras->automato->tabela
 function insertWord(word) {
   console.log(word)
       
   if(wordList.includes(word) || word == "") return;
 
-  if(!/^[a-z]+$/.test(word)) return; //interrompe se tiver letra maiuscula/caracter especial
+  if(!/^[a-z]+$/.test(word)) return;
 
-  //PALAVRAS EXISTENTES
   insertToList(word);
 
-  //MATRIZ DO AUTOMATO FINITO
   appendToMatrix(word);
 
-  //TABELA VISUAL
   updateTable(word);
 
   $("#insert-input").val("");
@@ -66,49 +59,38 @@ function insertWord(word) {
 function insertToList(word) {
     
   wordList.push(word)
-  let wordList_length = wordList.length-1; //indice da ultima palavra inserida
+  let wordList_length = wordList.length-1;
 
-  //Containers das palavras visualmente down inserção 
-  let _container = $("#word-list").append(`<div class='word-list-container' id='word-list-container-${wordList_length}'></div>`) // div nova no word list
-  let _word = $(`#word-list-container-${wordList_length}`).append(`<p class='word-in-list' id='word-${wordList_length}'>${wordList[wordList_length]}</p>`) //id exclusivo cada palavra
+  let _container = $("#word-list").append(`<div class='word-list-container' id='word-list-container-${wordList_length}'></div>`)
+  let _word = $(`#word-list-container-${wordList_length}`).append(`<p class='word-in-list' id='word-${wordList_length}'>${wordList[wordList_length]}</p>`)
 
 }
 
-function findElementInArray(word) { // busca se a palavra existe na lista
+function findElementInArray(word) {
   return wordList.includes(word);
 }
 
-// Deleta a tabela->search todos os estados e letras na matriz construir a tabela
 function updateTable() {
 
-  $("#table-body").empty(); // Limpa tabela anterior se existe
+  $("#table-body").empty();
 
   console.log("MATRIX LENGTH =", matrix.length);
 
-  for(let matrix_row = 0; matrix_row < matrix.length; matrix_row++) { //percorre indices matriz
+  for(let matrix_row = 0; matrix_row < matrix.length; matrix_row++) {
 
-    let current_position = matrix_row; //armazena a linha processada
-    let row_instance = `matrix-instance-${matrix_row}` // vai ser o id da primeira coluna de cada linha da matriz δ
-
-    //////////////////////////////////////////////////////////////
-    // Renderizar estados, atribui o id `matrix-instance-{NUMERO}` por celula
-    /////////////////////////////////////////////////////////////
+    let current_position = matrix_row;
+    let row_instance = `matrix-instance-${matrix_row}`
     
-    $('#table-body').append(`<tr id=${row_instance}></tr>`) // atribui o id da primeira coluna a cada linha novamente
+    $('#table-body').append(`<tr id=${row_instance}></tr>`)
     let current_state = `q${matrix_row}`;
     
-    // Itera pelos estados finais se eles correspondem à variavel matrix_row
     finalStates.map(val => {
       if(matrix_row == val) {
         current_state = `*` + current_state
       }
     })
     
-    $(`#${row_instance}`).append(`<td class='table-terminal-head'>${current_state}</td>`); // atribui variavel do q{ESTADO}
-    
-    //////////////////////////////////////////////////////////////
-    //Renderizar o resto das colunas da linha do estado da matriz, seguindo o alfabeto inteiro
-    //////////////////////////////////////////////////////////////
+    $(`#${row_instance}`).append(`<td class='table-terminal-head'>${current_state}</td>`);
 
     for(let i = 0; i < ALPHABET_SIZE; i++) {
  
@@ -117,7 +99,7 @@ function updateTable() {
       let table_cell;
 
       if(!matrix[current_position] || !matrix[current_position][letter]) {
-        state = `-` //hífen
+        state = `-`
         table_cell = `<td class='table-cell cell-q${current_position}-${letter}'> ${state} </td>`;
       }
       else {
@@ -130,12 +112,9 @@ function updateTable() {
   }
 }
 
-//Palavra no input na matriz, mapeando ela conforme a logica to automato finito de estados
 function appendToMatrix(word) {
 
-  //Estado é nomeado automata_length
-
-  let same_word = true; //Verifica se a palavra inserida ja existe
+  let same_word = true;
   let length = word.length
   let current_position = DEFAULT_STATE;
 
@@ -144,20 +123,19 @@ function appendToMatrix(word) {
    
     let letter = word[i];
 
-    if(!matrix[current_position]) { //existe uma linha nessa posição? new, define que a palavra não é a mesma
+    if(!matrix[current_position]) {
       same_word = false;
-      matrix.push([]); // Crio uma nova linha contendo todo o alfabeto, cada letra vai ser inserida ali
+      matrix.push([]);
       current_position = matrix.length-1;
       matrix[current_position][letter] = current_position+1;
-    } else if(!matrix[current_position][letter]) { // Se existe uma linha nessa posição, checar se existe uma letra, se não, então defini como uma palavra diferente
+    } else if(!matrix[current_position][letter]) {
       same_word = false;
       matrix[current_position][letter] = matrix.length;
     }
 
-    // Essa parte define como que a palavra se repete durante a execução da inserção na matriz:
     automata_length = matrix.length
-    if(!same_word)  current_position = automata_length; // se  não é a mesma palavra, a posição da inserção vai ser sempre para o fim da matriz 
-    else current_position = matrix[current_position][letter];    // se é a mesma palavra, a posição da inserção vai ser sempre para a posição q o estado sendo checado está apontando
+    if(!same_word)  current_position = automata_length;
+    else current_position = matrix[current_position][letter];
   }
 
   const final_state = matrix.length-1;
@@ -169,19 +147,18 @@ function appendToMatrix(word) {
 
 }
 
-// Função de pesquisa da palavra na tabela visivel
 function search(word) {
-  let selected_state = STATE = 0; // 0
+  let selected_state = STATE = 0;
 
-  $("#lexical-table tbody tr td").removeClass("correct-cell"); // remover todas as instancias de letras corretas no automato
-  $("#lexical-table tbody tr td").removeClass("wrong-cell"); // remover todas as instancias de letras incorretas no automato
-  $("#lexical-table tbody tr td").removeClass("selection-cell"); // remover cor da coluna selecionada em volta da palavra correta no automato
+  $("#lexical-table tbody tr td").removeClass("correct-cell");
+  $("#lexical-table tbody tr td").removeClass("wrong-cell");
+  $("#lexical-table tbody tr td").removeClass("selection-cell");
 
       
-  for(let i = 0; i < word.length; i++) { // iterar sobre a palavra, sempre pegando a ultima palavra e vendo se o caminho dela é correto
-    $("#lexical-table tbody tr td").removeClass("correct-cell"); // remover todas as instancias de letras corretas no automato
-    $("#lexical-table tbody tr td").removeClass("wrong-cell"); // remover todas as instancias de letras incorretas no automato
-    $("#lexical-table tbody tr td").removeClass("selection-cell"); // remover a cor da coluna selecionada da palavra incorreta no automato
+  for(let i = 0; i < word.length; i++) {
+    $("#lexical-table tbody tr td").removeClass("correct-cell");
+    $("#lexical-table tbody tr td").removeClass("wrong-cell");
+    $("#lexical-table tbody tr td").removeClass("selection-cell");
 
     if(matrix[selected_state][word[i]] !== undefined) {
       console.log($(`#table-state-q${matrix[selected_state][word[i]]}`));
@@ -212,11 +189,9 @@ function search(word) {
     }
   }
 
-  // Limba o input de inserção à matriz e o automato
   $("#insert-input").val("");
 }
 
-// Processar espaços como separadores explícitos
 function processInput(input) {
     return input.split(' ').filter(word => word.length > 0);
 }
